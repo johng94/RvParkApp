@@ -5,54 +5,58 @@ from flask_login import login_user, current_user, logout_user, login_required
 
 
 @app.route("/")
+def user_auth():
+    if current_user.is_authenticated:
+        return redirect(url_for('home'))
+    return render_template('signin-register.html')
+
+
 @app.route("/home")
 def home():
-    return render_template('home.html', posts=posts)
+    return render_template('index.html')
 
-
-@app.route("/about")
-def about():
-    return render_template('about.html', title='About')
-
-
-@app.route("/register", methods=['GET', 'POST'])
+@app.route("/register_user" , methods = ['GET','POST'])
 def register():
     if current_user.is_authenticated:
         return redirect(url_for('home'))
-    form = RegistrationForm()
-    if form.validate_on_submit():
-        hashed_password = bcrypt.generate_password_hash(form.password.data).decode('utf-8')
-        user = User(username=form.username.data, email=form.email.data, password=hashed_password)
-        db.session.add(user)
-        db.session.commit()
-        flash('Your account has been created! You are now able to log in', 'success')
-        return redirect(url_for('login'))
-    return render_template('register.html', title='Register', form=form)
-
-
-@app.route("/login", methods=['GET', 'POST'])
-def login():
-    if current_user.is_authenticated:
-        return redirect(url_for('home'))
-    form = LoginForm()
-    if form.validate_on_submit():
-        user = User.query.filter_by(email=form.email.data).first()
-        if user and bcrypt.check_password_hash(user.password, form.password.data):
-            login_user(user, remember=form.remember.data)
-            next_page = request.args.get('next')
-            return redirect(next_page) if next_page else redirect(url_for('home'))
+    if request.method == "POST":
+        username = request.form["username"]
+        email = request.form['email']
+        password = request.form['password']
+        confirm_password = request.form['confirmPassword']
+        user = User.query.filter_by(email=email).first()
+        user2 = User.query.filter_by(username=username).first()
+        if user:
+            flash("User already exists, please try logging in", "error")
+            return redirect(url_for('user_auth'))
+        elif user2:
+            flash("User already exists, please try logging in", "error")
+            return redirect(url_for('user_auth'))
         else:
-            flash('Login Unsuccessful. Please check email and password', 'danger')
-    return render_template('login.html', title='Login', form=form)
+            user = User(username=username.strip(), email=email, password=password)
+            db.session.add(user)
+            db.session.commit()
+            flash('You have successfully registered','success')
+            return redirect(url_for('user_auth'))
+
+
+@app.route("/login_user", methods=['GET','POST'])
+def login():
+    if request.method == "POST":
+        username = request.form["username"]
+        password = request.form['password']
+        user = User.query.filter_by(username=username.strip()).first()
+        if user:
+            if str(password) == str(user.password):
+                login_user(user)
+                return redirect(url_for('home'))
+        else:
+            flash("Incorrect username or password","danger")
+            print("here")
+            return redirect(url_for('user_auth'))
 
 
 @app.route("/logout")
 def logout():
     logout_user()
-    return redirect(url_for('home'))
-
-
-@app.route("/account")
-@login_required
-def account():
-    return render_template('account.html', title='Account')
+    return redirect(url_for('user_auth'))

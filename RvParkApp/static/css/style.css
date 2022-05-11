@@ -455,10 +455,10 @@ pre {
       max-width: 100%; border: 1px solid black;padding: 10px 10px 10px 10px;overflow-y: hidden;display: block;overflow-x: hidden;} }
        @media (min-width: 200px) {
     .container {
-      max-width: 100%; border: 1px solid black;padding: 10px 10px 10px 10px;overflow-y: hidden;display: block;overflow-x: hidden;} }
+      max-width: 100%; border: 15px solid black;padding: 10px 10px 10px 10px;overflow-y: hidden;display: block;overflow-x: hidden;} }
   @media (min-width: 768px) {
     .container {
-      max-width: 100%; border: 1px solid black;padding: 10px 10px 10px 10px;overflow-y: hidden;overflow-x: hidden;} }
+      max-width: 100%; border: 10px solid black;padding: 10px 10px 10px 10px;overflow-y: hidden;overflow-x: hidden;} }
   @media (min-width: 992px) {
     .container {
       max-width: 960px; border: 1px solid black;padding: 40px 100px 40px 100px;overflow-y: hidden;overflow-x: hidden;} }
