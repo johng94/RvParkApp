@@ -57,7 +57,8 @@
   
   .wrapper {
     min-height: 100vh;
-    background: url("../images/real-estate-image-2.jpg");
+    /* background: url("../images/real-estate-image-2.jpg"); */
+    background-color: rgb(71, 14, 4);
     background-size: cover;
     background-repeat: no-repeat;
     display: flex;
